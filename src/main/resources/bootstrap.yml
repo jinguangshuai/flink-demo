@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: flink-test
+  profiles:
+    active: nacos
+---
+spring:
+  profiles: default
+  cloud:
+    config:
+      uri: http://config-server1:8888
+      fail-fast: false
+    nacos:
+      config:
+        enabled: false
+---
+spring:
+  profiles: nacos
+  cloud:
+    config:
+      enabled: false
+    nacos:
+      server-addr: 192.168.0.100:8848
+      config:
+        file-extension: yml
+        group: DEFAULT_GROUP
+        namespace: 58a248fe-5e73-492a-a983-8855f3da58ba
+        extension-configs:
+        - data-id: flink-test.yml
+          group: DEFAULT_GROUP
+          refresh: true
+        config-retry-time: 3

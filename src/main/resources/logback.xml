@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+-scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true
+-scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。
+-           当scan为true时，此属性生效。默认的时间间隔为1分钟
+-debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+-
+- configuration 子节点为 appender、logger、root
+-->
+<configuration scan="true" scanPeriod="60 second" debug="false">
+
+ 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+	<property name="middleground_log_home" value="logs" />
+ 
+      <appender name="middleground_console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <!--<pattern>%d %p (%file:%line\)- %m%n</pattern>-->
+            <!--格式化输出：%d:表示日期    %thread:表示线程名     %-5level:级别从左显示5个字符宽度  %msg:日志消息    %n:是换行符-->
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+	
+     <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="middleground_environmentcenter_debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   		<File>${middleground_log_home}/middleground_environmentcenter_debug.log</File>
+        <!-- ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+ 
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天生成一个日志文件，保存1天的日志文件
+            - 如果隔一段时间没有输出日志，前面过期的日志不会被删除，只有再重新打印日志的时候，会触发删除过期日志的操作。
+            -->
+            <fileNamePattern>${middleground_log_home}/middleground_environmentcenter_debug_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>1</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender >
+	
+	
+    <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="middleground_environmentcenter_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<File>${middleground_log_home}/middleground_environmentcenter_info.log</File>
+        <!-- ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+ 
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天生成一个日志文件，保存30天的日志文件
+            - 如果隔一段时间没有输出日志，前面过期的日志不会被删除，只有再重新打印日志的时候，会触发删除过期日志的操作。
+            -->
+            <fileNamePattern>${middleground_log_home}/middleground_environmentcenter_info_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender >
+ 
+    <appender name="middleground_environmentcenter_warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<File>${middleground_log_home}/middleground_environmentcenter_warn.log</File>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${middleground_log_home}/middleground_environmentcenter_warn_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+ 
+    <appender name="middleground_environmentcenter_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<File>${middleground_log_home}/middleground_environmentcenter_error.log</File>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${middleground_log_home}/middleground_environmentcenter_error_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+	
+	 <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="middleground_platform_debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<File>${middleground_log_home}/middleground_platform_debug.log</File>
+        <!-- ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+ 
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天生成一个日志文件，保存1天的日志文件
+            - 如果隔一段时间没有输出日志，前面过期的日志不会被删除，只有再重新打印日志的时候，会触发删除过期日志的操作。
+            -->
+            <fileNamePattern>${middleground_log_home}/middleground_platform_debug_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>1</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender >
+	
+	    <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+    <appender name="middleground_platform_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<File>${middleground_log_home}/middleground_platform_info.log</File>
+        <!-- ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+ 
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天生成一个日志文件，保存30天的日志文件
+            - 如果隔一段时间没有输出日志，前面过期的日志不会被删除，只有再重新打印日志的时候，会触发删除过期日志的操作。
+            -->
+            <fileNamePattern>${middleground_log_home}/middleground_platform_info_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender >
+	
+	<appender name="middleground_platform_warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${middleground_log_home}/middleground_platform_warn.log</File>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${middleground_log_home}/middleground_platform_warn_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+ 
+	<appender name="middleground_platform_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${middleground_log_home}/middleground_platform_error.log</File>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] [%thread] [%X{trace_id}] %msg [%file:%line] %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+ 
+        <!-- 按照固定窗口模式生成日志文件，当文件大于20MB时，生成新的日志文件。
+        -    窗口大小是1到3，当保存了3个归档文件后，将覆盖最早的日志。
+        -    可以指定文件压缩选项
+        -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${middleground_log_home}/middleground_platform_error_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+    
+    <!--
+    - 1.将级别为“INFO”及大于“INFO”的日志信息交给此logger指定的名为“STDOUT”的appender处理，在控制台中打出日志，
+    -   不再向次logger的上级 <logger name="logback"/> 传递打印信息
+    - 2.level：设置打印级别（TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF），还有一个特殊值INHERITED或者同义词NULL，代表强制执行上级的级别。
+    -        如果未设置此属性，那么当前logger将会继承上级的级别。
+    - 3.additivity：为false，表示此logger的打印信息不再向上级传递,如果设置为true，会打印两次
+    - 4.appender-ref：指定了名字为"STDOUT"的appender。
+    -->
+    <!--<logger name="org.apache" level="DEBUG" additivity="false">-->
+		<!--<appender-ref ref="CONSOLE"/>-->
+        <!--<appender-ref ref="middleground_platform_debug"/>-->
+        <!--<appender-ref ref="middleground_platform_info"/>-->
+        <!--<appender-ref ref="middleground_platform_warn"/>-->
+        <!--<appender-ref ref="middleground_platform_error"/>-->
+    <!--</logger>-->
+	<!---->
+	<logger name="com.example.demo" level="INFO" additivity="false">
+		<appender-ref ref="middleground_console"/>
+        <appender-ref ref="middleground_environmentcenter_debug"/>
+        <appender-ref ref="middleground_environmentcenter_info"/>
+        <appender-ref ref="middleground_environmentcenter_warn"/>
+        <appender-ref ref="middleground_environmentcenter_error"/>
+    </logger>
+ 
+    <!--
+    - 根logger
+    - level:设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，不能设置为INHERITED或者同义词NULL。
+    -       默认是DEBUG。
+    -appender-ref:可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger
+    -->
+    <root level="INFO">
+        <appender-ref ref="middleground_console"/>
+        <appender-ref ref="middleground_environmentcenter_debug"/>
+        <appender-ref ref="middleground_environmentcenter_info"/>
+        <appender-ref ref="middleground_environmentcenter_warn"/>
+        <appender-ref ref="middleground_environmentcenter_error"/>
+    </root>
+</configuration>
